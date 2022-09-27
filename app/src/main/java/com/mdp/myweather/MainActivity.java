@@ -5,27 +5,83 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mdp.myweather.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private ActivityMainBinding binding;
     private GoogleMap nMap;
+    private List<Lokasi> restaurantList = new ArrayList<>();
+    private List<Lokasi> hospitalList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
+        restaurantList.add(new Lokasi("Belido Restaurant", new LatLng(-2.9544493129715845, 104.74733438938732)));
+        restaurantList.add(new Lokasi("Pecel Lele Shakila", new LatLng(-2.9536211329513455, 104.750980246199)));
+        restaurantList.add(new Lokasi("RM Pindang Raja Pegagan", new LatLng(-2.9539454876745976, 104.75165688415095)));
+        restaurantList.add(new Lokasi("Warung Nasi Sederhana", new LatLng(-2.9533418274192895, 104.7515756875967)));
+        restaurantList.add(new Lokasi("Pecel Lele Gareng", new LatLng(-2.95213450589559, 104.75816163063487)));
+        restaurantList.add(new Lokasi("Wakcoy Cafe", new LatLng(-2.9514672237008726, 104.7507922089833)));
+        restaurantList.add(new Lokasi("Louise Bistro", new LatLng(-2.9652438844255937, 104.74668660401602)));
+        restaurantList.add(new Lokasi("City Restaurant", new LatLng(-2.9617781296133296, 104.74058789372982)));
+        restaurantList.add(new Lokasi("Restaurant Jenny", new LatLng(-2.971487312112279, 104.74176170429034)));
+        restaurantList.add(new Lokasi("Picasso Restaurant", new LatLng(-2.9713598955654072, 104.7510501164426)));
+
+        hospitalList.add(new Lokasi("RS Charitas", new LatLng(-2.975074910333812, 104.75254548292726)));
+        hospitalList.add(new Lokasi("RS Hermina", new LatLng(-2.955810433692043, 104.74849139202414)));
+        hospitalList.add(new Lokasi("RS Bhayangkara", new LatLng(-2.9583548472197694, 104.73762553107822)));
+        hospitalList.add(new Lokasi("RS Musi", new LatLng(-2.979691839886026, 104.72376213902504)));
+        hospitalList.add(new Lokasi("RS Muhammad Hoesin", new LatLng(-2.966201144158307, 104.74912754539834)));
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync (this);
+
+        binding.fabRestaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nMap.clear();
+                for (int i=0; i < restaurantList.size(); i++){
+                    nMap.addMarker(new MarkerOptions()
+                            .position(restaurantList.get(i).getLatlng())
+                            .title(restaurantList.get(i).getNama()))
+                            .showInfoWindow();
+                }
+                nMap.animateCamera(CameraUpdateFactory.newLatLngZoom(restaurantList.get(4).getLatlng(), 17));
+
+            }
+        });
+        binding.fabHospital.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nMap.clear();
+                for (int i = 0; i <hospitalList.size(); i++) {
+                    nMap.addMarker(new MarkerOptions()
+                                    .position(hospitalList.get(i).getLatlng())
+                                    .title(hospitalList.get(i).getNama())
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)))
+                            .showInfoWindow();
+                }
+                nMap.animateCamera(CameraUpdateFactory.newLatLngZoom(hospitalList.get(1).getLatlng(),15));
+
+            }
+        });
     }
 
     @Override
